@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Trivia App</string>
+    <string name="app_icon">app icon</string>
+    <string name="start_quiz">Start Quiz</string>
+    <string name="your_name">What is your name?</string>
+    <string name="type_here">Type here</string>
+    <string name="multiple_select">*You may select more than one options</string>
+    <string name="single_select">*You can select only one option</string>
+    <string name="next">Next</string>
+    <string name="prev">Prev</string>
+    <string name="summary">Summary</string>
+    <string name="finish">Finish</string>
+    <string name="history">History</string>
+    <string name="game_history">Game History</string>
+    <string name="selected_heading">Here are the answers selected:</string>
+    <string name="close">close</string>
+    />
+</resources>

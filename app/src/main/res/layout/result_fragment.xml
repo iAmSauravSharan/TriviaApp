@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.sauravsharan.appscrip.ui.result.ResultViewModel" />
+
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".ui.result.ResultFragment">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_clear"
+            android:layout_margin="30dp"
+            android:contentDescription="@string/close"
+            android:onClick="@{() -> viewModel.onCloseButtonClicked()}"
+            android:tint="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/summary_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:padding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:layout_marginTop="30dp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/summary" />
+
+        <TextView
+            android:id="@+id/summary_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:padding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:layout_marginTop="30dp"
+            android:textColor="@color/black"
+            tools:text="Hello, User"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/summary_heading"
+            android:text="@{viewModel.userName}" />
+
+        <TextView
+            android:id="@+id/summary_placeholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:padding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:layout_marginTop="10dp"
+            android:text="@string/selected_heading"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/summary_name" />
+
+        <TextView
+            android:id="@+id/summary_first_question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:padding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            tools:text="This is the first question"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/summary_placeholder"
+            android:text="@{viewModel.firstQuestion}" />
+
+        <TextView
+            android:id="@+id/summary_first_answer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:paddingBottom="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:layout_marginTop="2dp"
+            tools:text="Answers: question"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/summary_first_question"
+            android:text="@{viewModel.firstAnswer}" />
+
+        <TextView
+            android:id="@+id/summary_second_question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:padding="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            tools:text="This is the first question"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/summary_first_answer"
+            android:text="@{viewModel.secondQuestion}" />
+
+        <TextView
+            android:id="@+id/summary_second_answer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:paddingBottom="10dp"
+            android:fontFamily="@font/roboto_slab"
+            android:layout_marginTop="2dp"
+            tools:text="Answers: question"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/summary_second_question"
+            android:text="@{viewModel.secondAnswer}" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/finish_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="40dp"
+            android:onClick="@{() -> viewModel.onFinishButtonClicked()}"
+            android:textColor="@color/white"
+            android:background="@drawable/round_button_bg"
+            android:text="@string/finish"
+            app:layout_constraintTop_toBottomOf="@id/summary_second_answer"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/history_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_margin="40dp"
+            android:onClick="@{() -> viewModel.onHistoryButtonClicked()}"
+            android:textColor="@color/white"
+            android:text="@string/history"
+            app:layout_constraintTop_toBottomOf="@id/finish_button"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</layout>

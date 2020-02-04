@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.sauravsharan.appscrip.ui.quiz.QuizViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="20dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="20dp"
+        tools:context=".ui.quiz.QuizFragment">
+
+        <TextView
+            android:id="@+id/question_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="@font/roboto_slab"
+            android:padding="10dp"
+            android:text="@={viewModel.questionText}"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Who is your favourite cricketer?" />
+
+        <RadioGroup
+            android:id="@+id/radio_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:visibility="@{viewModel.isMultipleSelectable ? View.INVISIBLE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/question_text">
+
+            <RadioButton
+                android:id="@+id/first_option_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="@={viewModel.isFirstOptionSelected}"
+                android:fontFamily="@font/roboto_slab"
+                android:padding="10dp"
+                android:text="@{viewModel.firstOptionText}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                tools:text="@string/your_name" />
+
+            <RadioButton
+                android:id="@+id/second_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:checked="@={viewModel.isSecondOptionSelected}"
+                android:fontFamily="@font/roboto_slab"
+                android:padding="10dp"
+                android:text="@{viewModel.secondOptionText}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                tools:text="@string/your_name" />
+
+            <RadioButton
+                android:id="@+id/third_option_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:checked="@={viewModel.isThirdOptionSelected}"
+                android:fontFamily="@font/roboto_slab"
+                android:padding="10dp"
+                android:text="@{viewModel.thirdOptionText}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                tools:text="@string/your_name" />
+
+            <RadioButton
+                android:id="@+id/fourth_option_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:checked="@={viewModel.isFourthOptionSelected}"
+                android:fontFamily="@font/roboto_slab"
+                android:padding="10dp"
+                android:text="@{viewModel.fourthOptionText}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                tools:text="@string/your_name" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/checkbox_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:visibility="@{viewModel.isMultipleSelectable ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/question_text">
+
+            <CheckBox
+                android:id="@+id/first_option_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="@={viewModel.isFirstOptionSelected}"
+                android:fontFamily="@font/roboto_slab"
+                android:padding="10dp"
+                android:text="@{viewModel.firstOptionText}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                tools:text="@string/your_name" />
+
+            <CheckBox
+                android:id="@+id/second_option_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:checked="@={viewModel.isSecondOptionSelected}"
+                android:fontFamily="@font/roboto_slab"
+                android:padding="10dp"
+                android:text="@{viewModel.secondOptionText}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                tools:text="@string/your_name" />
+
+            <CheckBox
+                android:id="@+id/third_option_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:checked="@={viewModel.isThirdOptionSelected}"
+                android:fontFamily="@font/roboto_slab"
+                android:padding="10dp"
+                android:text="@{viewModel.thirdOptionText}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                tools:text="@string/your_name" />
+
+            <CheckBox
+                android:id="@+id/fourth_option_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:checked="@={viewModel.isFourthOptionSelected}"
+                android:fontFamily="@font/roboto_slab"
+                android:padding="10dp"
+                android:text="@{viewModel.fourthOptionText}"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                tools:text="@string/your_name" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/note_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="40dp"
+            android:text="@{viewModel.isMultipleSelectable? @string/multiple_select : @string/single_select}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/question_text"
+            app:layout_constraintTop_toBottomOf="@id/checkbox_options"
+            tools:text="@string/multiple_select" />
+
+        <FrameLayout
+            android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/round_button_bg"
+            android:onClick="@{() -> viewModel.onNextButtonClicked()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:src="@{viewModel.isLastQuestion ? @drawable/ic_check : @drawable/ic_right}" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/prev_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/round_button_bg"
+            android:onClick="@{() -> viewModel.onPrevButtonClicked()}"
+            android:visibility="@{viewModel.isFirstQuestion ? View.INVISIBLE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_left" />
+
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
