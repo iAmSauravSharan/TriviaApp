@@ -9,6 +9,10 @@ interface DatabaseHelper {
 
     suspend fun saveUser(user: User)
 
+    suspend fun updateUser(user: User)
+
+    suspend fun deleteUser(user: User)
+
     suspend fun getAllQuestions(): List<Questions>
 
     suspend fun deleteAllQuestions()

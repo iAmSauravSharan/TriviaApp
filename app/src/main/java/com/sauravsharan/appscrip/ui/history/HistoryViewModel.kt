@@ -33,11 +33,16 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            _questionList.value = repository.getAllQuestions()
-            _userList.value = repository.getAllUsers()
+            val questions = repository.getAllQuestions()
+            val users = repository.getAllUsers()
 
-            if(_questionList.value!!.isNotEmpty() &&
-                _userList.value!!.isNotEmpty()) _loadData.value = true
+            viewModelScope.launch {
+                _questionList.value = questions
+                _userList.value = users
+            }
+
+            if(!_questionList.value.isNullOrEmpty() &&
+                !_userList.value.isNullOrEmpty()) _loadData.value = true
         }
 
     }

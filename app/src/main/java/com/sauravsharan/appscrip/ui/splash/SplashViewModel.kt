@@ -32,8 +32,7 @@ class SplashViewModel(application: Application) : AndroidViewModel(application) 
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            if (repository.getAllUsers().isEmpty()) {
-                Timber.d("in if")
+            if (repository.getAllQuestions().isEmpty()) {
                 val response = Gson().fromJson<Response>(
                     getFileFromAssets(
                         application,

@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.sauravsharan.appscrip.data.AppRepository
 import com.sauravsharan.appscrip.data.database.AppDatabase
 import com.sauravsharan.appscrip.data.database.model.User
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +18,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val userName = MutableLiveData<String>()
 
-    val database = AppDatabase.getInstance(application)
+    val repository = AppRepository(application)
 
     private val _nameError = MutableLiveData<Boolean>()
     val nameError: LiveData<Boolean>
@@ -34,7 +35,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun saveNameToDatabase() {
         viewModelScope.launch(Dispatchers.IO) {
-            database.userDao.insert(User(userName = userName.value.toString()))
+            repository.saveUser(User(userName = userName.value.toString()))
+            Timber.d("user total ${repository.getAllUsers().size}")
         }
     }
 

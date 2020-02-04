@@ -38,13 +38,15 @@ class ResultViewModel(application: Application) : AndroidViewModel(application) 
             val users = repository.getAllUsers()
             val questions = repository.getAllQuestions()
 
-            val user = users[users.size-1]
+            val user = users[users.size - 1]
 
-            userName.value = user.userName
-            firstQuestion.value =  questions[0].questionText
-            firstAnswer.value = user.attemptedAnswers?.get(1)
-            secondQuestion.value = questions[1].questionText
-            secondAnswer.value = user.attemptedAnswers?.get(2)
+            viewModelScope.launch {
+                userName.value = "Hello, ${user.userName}"
+                firstQuestion.value = questions[0].questionText
+                firstAnswer.value = "Answer: ${user.attemptedAnswers?.get(0)}"
+                secondQuestion.value = questions[1].questionText
+                secondAnswer.value = "Answer: ${user.attemptedAnswers?.get(1)}"
+            }
 
         }
 

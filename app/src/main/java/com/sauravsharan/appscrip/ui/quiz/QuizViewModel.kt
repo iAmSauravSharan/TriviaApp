@@ -7,9 +7,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sauravsharan.appscrip.data.AppRepository
 import com.sauravsharan.appscrip.data.database.model.Questions
+import com.sauravsharan.appscrip.data.database.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class QuizViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -23,13 +27,19 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
     val thirdOptionText = MutableLiveData<String>()
     val fourthOptionText = MutableLiveData<String>()
     val noteText = MutableLiveData<String>()
-    val isLastQuestion = MutableLiveData<Boolean>(false)
+    val isLastQuestion = MutableLiveData<Boolean>()
     val isFirstQuestion = MutableLiveData<Boolean>(true)
     val isMultipleSelectable = MutableLiveData<Boolean>()
-    val isFirstOptionSelected = MutableLiveData<Boolean>()
-    val isSecondOptionSelected = MutableLiveData<Boolean>()
-    val isThirdOptionSelected = MutableLiveData<Boolean>()
-    val isFourthOptionSelected = MutableLiveData<Boolean>()
+
+    val isFirstOptionSelectedRadio = MutableLiveData<Boolean>()
+    val isSecondOptionSelectedRadio = MutableLiveData<Boolean>()
+    val isThirdOptionSelectedRadio = MutableLiveData<Boolean>()
+    val isFourthOptionSelectedRadio = MutableLiveData<Boolean>()
+
+    val isFirstOptionSelectedCheck = MutableLiveData<Boolean>()
+    val isSecondOptionSelectedCheck = MutableLiveData<Boolean>()
+    val isThirdOptionSelectedCheck = MutableLiveData<Boolean>()
+    val isFourthOptionSelectedCheck = MutableLiveData<Boolean>()
 
     private val _submitQuizListener = MutableLiveData<Boolean>()
     val submitQuizListener: LiveData<Boolean>
@@ -41,19 +51,20 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
             questions = repository.getAllQuestions()
 
             if (questions.isNotEmpty()) {
-                onNextButtonClicked()
+                TOTAL_NO_OF_QUESTIONS = questions.size - 1
+                CURRENT_QUESTION = 0
+                setUpQuestions(CURRENT_QUESTION)
             }
-
-            Timber.d("start")
-            Timber.d(questions[0].options[0])
-            Timber.d(questions[0].options[1])
-            Timber.d(questions[0].options[2])
         }
 
     }
 
     private fun setUpQuestions(questionNo: Int) {
         viewModelScope.launch {
+
+            isFirstQuestion.value = questionNo == 0
+            isLastQuestion.value = questionNo == TOTAL_NO_OF_QUESTIONS
+
             questionText.value = questions[questionNo].questionText
             firstOptionText.value = questions[questionNo].options[0]
             secondOptionText.value = questions[questionNo].options[1]
@@ -61,43 +72,121 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
             fourthOptionText.value = questions[questionNo].options[3]
             isMultipleSelectable.value = questions[questionNo].isMultipleSelectionAllowed
 
-            answerMapping[CURRENT_QUESTION-1]
+            if (!answerMapping[questionNo.toLong()].isNullOrEmpty()) {
 
+                val markedAnswers = answerMapping[questionNo.toLong()]
+                if (markedAnswers != null) {
+                    for (choice in markedAnswers) {
+                        if(choice == FIRST_OPTION) {
+                            if(isMultipleSelectable.value == true)
+                                isFirstOptionSelectedCheck.value = true
+                            else isFirstOptionSelectedRadio.value = true
+                        }
+                        if(choice == SECOND_OPTION) {
+                            if(isMultipleSelectable.value == true)
+                                isSecondOptionSelectedCheck.value = true
+                            else isSecondOptionSelectedRadio.value = true
+                        }
+                        if(choice == THIRD_OPTION) {
+                            if(isMultipleSelectable.value == true)
+                                isThirdOptionSelectedCheck.value = true
+                            else isThirdOptionSelectedRadio.value = true
+                        }
+                        if(choice == FOURTH_OPTION) {
+                            if(isMultipleSelectable.value == true)
+                                isFourthOptionSelectedCheck.value = true
+                            else isFourthOptionSelectedRadio.value = true
+                        }
+                    }
+                }
+            }
         }
+
     }
 
     fun onNextButtonClicked() {
 
-        if (isLastQuestion.value == true || CURRENT_QUESTION == questions.size - 1) {
+        if (CURRENT_QUESTION == TOTAL_NO_OF_QUESTIONS) {
+            saveResponse()
+            saveResponseToDatabase()
             _submitQuizListener.value = true
             return
         }
 
-        val selectedOptions = ArrayList<Int>()
+        saveResponse()
 
-        if (isFirstOptionSelected.value == true) selectedOptions.add(1)
-        if (isSecondOptionSelected.value == true) selectedOptions.add(2)
-        if (isThirdOptionSelected.value == true) selectedOptions.add(3)
-        if (isFourthOptionSelected.value == true) selectedOptions.add(4)
+        resetOptions()
 
-        answerMapping[CURRENT_QUESTION.toLong()] = selectedOptions
-
-        if (CURRENT_QUESTION == 1) isFirstQuestion.value = true
-        if (CURRENT_QUESTION == questions.size - 1) isLastQuestion.value = true
+        CURRENT_QUESTION++
 
         setUpQuestions(CURRENT_QUESTION)
 
-        CURRENT_QUESTION++
+    }
+
+    private fun saveResponse() {
+        val selectedOptions = ArrayList<Int>()
+
+        if (isMultipleSelectable.value == true) {
+            if (isFirstOptionSelectedCheck.value == true) selectedOptions.add(FIRST_OPTION)
+            if (isSecondOptionSelectedCheck.value == true) selectedOptions.add(SECOND_OPTION)
+            if (isThirdOptionSelectedCheck.value == true) selectedOptions.add(THIRD_OPTION)
+            if (isFourthOptionSelectedCheck.value == true) selectedOptions.add(FOURTH_OPTION)
+        } else {
+            if (isFirstOptionSelectedRadio.value == true) selectedOptions.add(FIRST_OPTION)
+            if (isSecondOptionSelectedRadio.value == true) selectedOptions.add(SECOND_OPTION)
+            if (isThirdOptionSelectedRadio.value == true) selectedOptions.add(THIRD_OPTION)
+            if (isFourthOptionSelectedRadio.value == true) selectedOptions.add(FOURTH_OPTION)
+        }
+
+
+
+        answerMapping[CURRENT_QUESTION.toLong()] = selectedOptions
+    }
+
+    private fun saveResponseToDatabase() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val users = repository.getAllUsers()
+            val user = users[users.size-1]
+
+            val attemptedAnswers = hashMapOf<Long, String>()
+
+
+            for(i in answerMapping.entries) {
+                var answer = ""
+
+                for(items in i.value) answer += "$items, "
+
+                Timber.d("answer is ${answer.lastIndex-1}")
+
+                attemptedAnswers[i.key] = answer.trim().substring(0, answer.lastIndex-1)
+            }
+
+            repository.updateUser(User(user.userId,
+                user.userName, attemptedAnswers, Date(System.currentTimeMillis())
+            ))
+
+
+        }
+    }
+
+    private fun resetOptions() {
+        isFirstOptionSelectedRadio.value = false
+        isSecondOptionSelectedRadio.value = false
+        isThirdOptionSelectedRadio.value = false
+        isFourthOptionSelectedRadio.value = false
+
+        isFirstOptionSelectedCheck.value = false
+        isSecondOptionSelectedCheck.value = false
+        isThirdOptionSelectedCheck.value = false
+        isFourthOptionSelectedCheck.value = false
     }
 
     fun onPrevButtonClicked() {
-        if (isFirstQuestion.value == true || CURRENT_QUESTION == 0) return
-
-        if (CURRENT_QUESTION == 1) isFirstQuestion.value = true
-
-        setUpQuestions(CURRENT_QUESTION)
+        if (CURRENT_QUESTION == 0) return
 
         CURRENT_QUESTION--
+
+        setUpQuestions(CURRENT_QUESTION)
     }
 
     override fun onCleared() {
@@ -105,7 +194,12 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     companion object {
-        var CURRENT_QUESTION = 0
+        var CURRENT_QUESTION = -1
+        var TOTAL_NO_OF_QUESTIONS = 0
+        const val FIRST_OPTION = 1
+        const val SECOND_OPTION = 2
+        const val THIRD_OPTION = 3
+        const val FOURTH_OPTION = 4
     }
 
 }

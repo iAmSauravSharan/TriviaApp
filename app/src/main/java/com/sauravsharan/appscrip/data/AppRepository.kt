@@ -19,6 +19,14 @@ class AppRepository(context: Context): RepositoryHelper {
         database.userDao.insert(user)
     }
 
+    override suspend fun updateUser(user: User) {
+        database.userDao.updateUser(user)
+    }
+
+    override suspend fun deleteUser(user: User) {
+        database.userDao.deleteUser(user)
+    }
+
     override suspend fun getAllQuestions(): List<Questions> {
         return database.questionsDao.getAllQuestions()
     }
